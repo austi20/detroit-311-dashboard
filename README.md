@@ -6,6 +6,8 @@ How fast does Detroit actually close the service requests residents file through
 
 The obvious answer, average days to close over closed issues, is biased. Slow issues that are still open drop out of the average, so the city looks faster than it is. I built a three page Power BI report around a 30 day close rate by creation month instead, compared with the same months a year earlier.
 
+[Open the live report](https://app.powerbi.com/view?r=eyJrIjoiYjkzNWYyYjEtMTkyNS00Y2ViLWI4ZDctYzU4ZGRkOGRmZWJkIiwidCI6IjIyMTc3MTMwLTY0MmYtNDFkOS05MjExLTc0MjM3YWQ1Njg3ZCIsImMiOjN9) in Power BI. It opens on the second page, so use the arrows at the bottom to move between the three pages.
+
 ## What I found
 
 Detroit closed 84.8% of requests within 30 days for issues created September 2025 through August 2026, against 88.6% for the 12 months before. That is 3.8 points slower.
