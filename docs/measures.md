@@ -77,7 +77,7 @@ Open Backlog Label = FORMAT([Open Backlog], "#,0")
 
 ## Visual scope
 
-`30-Day Close Rate LY` shifts the date filter back one year, so a rate with no date filter compares unlike periods. Four visuals carry their own filter on `Calendar[Month Start]`, on or after 2025-09-01 and before 2026-09-01: the 30-Day Close Rate card, the YoY card, and both matrices on the Where and what page. That is the last 12 cohorts with a full 30 day window, against the 12 before them. The line chart, the other cards, the map and the aging page are not filtered by date. The map is an Azure Maps visual filtered to status Open or Acknowledged and latitude above 42, which drops 294 issues whose latitude and longitude are swapped and the issues with no coordinates.
+`30-Day Close Rate LY` shifts the date filter back one year, so a rate with no date filter compares unlike periods. Four visuals carry their own filter on `Calendar[Month Start]`, on or after 2025-09-01 and before 2026-09-01: the 30-Day Close Rate card, the YoY card, and both matrices on the Where and what page. That is the last 12 cohorts with a full 30 day window, against the 12 before them. The line chart, the other cards, the heat map and the aging page are not filtered by date. The heat map is an Azure Maps visual with its heat map layer on and markers off, filtered to status Open or Acknowledged and latitude above 42, which drops 294 issues whose latitude and longitude are swapped and the issues with no coordinates.
 
 Cross check for the filtered window, from `python src/findings.py`: pandas 0.8478 last 12 months, 0.8858 prior, difference -3.8 points. The cards show 84.8% and -3.8.
 

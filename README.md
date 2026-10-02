@@ -19,7 +19,7 @@ Detroit closed 84.8% of requests within 30 days for issues created September 202
 
 I expected a year over year comparison to be the main story. The first cohorts say otherwise. Issues created in July and August 2024 closed within 30 days only 49.8% and 55.3% of the time, then the rate jumped to 86.1% for September 2024 and stayed near 90% for a year. A step that sharp looks like a change in how the city closes or archives issues, not a change in service. I can not tell which from this data. It is why the headline comparison starts at September 2024 and why the August 2025 cohort shows a 31 point gain that I do not trust.
 
-The map surfaced a data problem. 294 issues have their latitude and longitude swapped, so they plot in Antarctica until you filter them out. The map filters on latitude above 42 and drops them, along with the 19,495 issues that have no coordinates at all. That leaves 4,948 of the 5,068 open issues on the map.
+The heat map surfaced a data problem. 294 issues have their latitude and longitude swapped, so they plot in Antarctica until you filter them out. The heat map filters on latitude above 42 and drops them, along with the 19,495 issues that have no coordinates at all. That leaves 4,948 of the 5,068 open issues in the heat map.
 
 ## The report
 
@@ -29,7 +29,7 @@ Three pages in `Detroit311.pbix`, also exported to [docs/detroit311_report.pdf](
 
 ![Overview](docs/overview.png)
 
-**Where and what.** 30 day close rate, last year's rate and the change, by request category and by council district, with the rate shaded. A map shows every open issue.
+**Where and what.** 30 day close rate, last year's rate and the change, by request category and by council district, with the rate shaded. A heat map shows where the open issues are concentrated.
 
 ![Where and what](docs/where_and_what.png)
 
