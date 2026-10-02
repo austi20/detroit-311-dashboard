@@ -7,6 +7,26 @@ Two helper columns are built in Power Query:
 - `closed_in_30d` is 1 when `closed_at` is on or before `created_at` plus 30 days. Open and Archived issues are 0.
 - `eligible_30d` is 1 when the issue was created at least 30 days before the newest `created_at` in the data, so every issue in the rate had a full 30 days to close.
 
+Three calculated columns drive the backlog aging page. Age is measured to the newest `created_at` in the data, not to today, so the buckets do not drift. `Age Bucket Order` is the sort key for `Age Bucket`.
+
+```dax
+Age Days = INT(MAX(Issues[created_at]) - Issues[created_at])
+
+Age Bucket =
+SWITCH(TRUE(),
+    Issues[Age Days] <= 7, "0-7 days",
+    Issues[Age Days] <= 30, "8-30 days",
+    Issues[Age Days] <= 90, "31-90 days",
+    "90+ days")
+
+Age Bucket Order =
+SWITCH(TRUE(),
+    Issues[Age Days] <= 7, 1,
+    Issues[Age Days] <= 30, 2,
+    Issues[Age Days] <= 90, 3,
+    4)
+```
+
 ```dax
 Issues Opened = COUNTROWS(Issues)
 
@@ -46,6 +66,12 @@ Cohort month August 2025, data as of 2026-09-28. Pandas values come from `python
 | YoY Δ pts | 31.4874 | 31.4874 |
 
 Whole data set: 209,394 rows loaded, 5,068 open (4,687 Acknowledged plus 381 Open), 12,417 issues with no district shown as "Unknown".
+
+## Visual scope
+
+`30-Day Close Rate LY` shifts the date filter back one year, so a rate with no date filter compares unlike periods. Four visuals carry their own filter on `Calendar[Month Start]`, on or after 2025-09-01 and before 2026-09-01: the 30-Day Close Rate card, the YoY card, and both matrices on the Where and what page. That is the last 12 cohorts with a full 30 day window, against the 12 before them. The line chart, the other cards, the neighborhood bars and the aging page are not filtered by date.
+
+Cross check for the filtered window, from `python src/findings.py`: pandas 0.8478 last 12 months, 0.8858 prior, difference -3.8 points. The cards show 84.8% and -3.8.
 
 ## Request type mapping
 

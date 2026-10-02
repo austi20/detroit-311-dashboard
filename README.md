@@ -4,7 +4,38 @@
 
 How fast does Detroit actually close the service requests residents file through Improve Detroit, and is it getting faster or slower by request type and council district?
 
-The obvious answer, average days to close over closed issues, is biased. Slow issues that are still open drop out of the average, so the city looks faster than it is. I am building a Power BI dashboard around a 30 day close rate by creation month instead, compared with the same months a year earlier. The report pages are in progress. What is here now is the data pipeline and the Power BI model with its measures.
+The obvious answer, average days to close over closed issues, is biased. Slow issues that are still open drop out of the average, so the city looks faster than it is. I built a three page Power BI report around a 30 day close rate by creation month instead, compared with the same months a year earlier.
+
+## What I found
+
+Detroit closed 84.8% of requests within 30 days for issues created September 2025 through August 2026, against 88.6% for the 12 months before. That is 3.8 points slower.
+
+- **The slowdown is concentrated.** Illegal Dumping and Debris went from 83.2% to 66.7%, Grass and Weeds from 95.0% to 69.8%, Graffiti and Public Amenities from 99.1% to 85.1%. Sewer and Drainage went the other way, from 67.0% to 95.2%, and Vacant Property and Code from 72.8% to 92.1%.
+- **The recent months are the weak ones.** Cohorts from September 2025 through April 2026 close 88% to 95% of requests in 30 days. May through August 2026 run 76.4%, 64.8%, 83.3% and 76.9%.
+- **The old backlog sits in three places.** 5,068 issues are still Open or Acknowledged. 784 of them are more than 90 days old, and Illegal Dumping and Debris (259), Vacant Property and Code (200) and Traffic Signs and Signals (154) make up 78.2% of those.
+- **District 4 is slowest.** It closes 79.9% within 30 days, 7.0 points below a year earlier. District 3 is next at 81.0%. District 2 is the fastest numbered district at 87.4%.
+
+## What I expected and did not get
+
+I expected a year over year comparison to be the main story. The first cohorts say otherwise. Issues created in July and August 2024 closed within 30 days only 49.8% and 55.3% of the time, then the rate jumped to 86.1% for September 2024 and stayed near 90% for a year. A step that sharp looks like a change in how the city closes or archives issues, not a change in service. I can not tell which from this data. It is why the headline comparison starts at September 2024 and why the August 2025 cohort shows a 31 point gain that I do not trust.
+
+I also wanted a map of the open backlog. Power BI's map visuals are switched off in my install, and turning them on sends location data to Bing, so I used a bar chart by neighborhood. 317 of the 5,068 open issues have no neighborhood, which is the longest bar.
+
+## The report
+
+Three pages in `Detroit311.pbix`, also exported to [docs/detroit311_report.pdf](docs/detroit311_report.pdf).
+
+**Overview.** Five cards and the monthly trend. The 30 day rate and the year over year card cover issues created September 2025 through August 2026, the last 12 cohorts with a full 30 day window. The line chart shows every month against the same month a year earlier.
+
+![Overview](docs/overview.png)
+
+**Where and what.** 30 day close rate, last year's rate and the change, by request category and by council district, with the rate shaded. A bar chart shows open backlog by neighborhood.
+
+![Where and what](docs/where_and_what.png)
+
+**Backlog aging.** Open issues bucketed by days since they were created (0 to 7, 8 to 30, 31 to 90, 90 plus), by request category.
+
+![Backlog aging](docs/backlog_aging.png)
 
 ## Data quality
 
@@ -33,13 +64,15 @@ Cleaning drops exact duplicate `issue_id`s and rows with no `created_at`, and lo
 
 The parquet file is not committed. Run the script to rebuild it.
 
-## The model
+## How it works
 
 `Detroit311.pbix` is a star schema. `Issues` is the fact table, with `Calendar` (marked as the date table), `Request Type` and `District` around it. I mapped the 69 raw request types into 15 categories in `docs/request_type_map.csv`. The DAX is in [docs/measures.md](docs/measures.md).
 
 The headline measure is the 30 day close rate by creation month. It only counts issues created at least 30 days before the newest one in the data, so every issue had a full window to close. I also show the median days to close, which only sees closed issues and so runs optimistic.
 
-I checked the measures against pandas for August 2025 (`python src/check_measures.py 2025-08`). All six match: 9,527 issues opened, 22 still open, median 9 days, 30 day close rate 86.8% against 55.3% a year earlier. The 31 point jump is large enough that I want to understand it before I claim the city got faster. It may be a change in how issues were closed in 2024, not in service.
+The backlog aging page uses three calculated columns on `Issues`. Age is the days between an issue's creation and the newest issue in the data, not today's date, so the buckets do not drift when the file is opened later.
+
+I checked the measures against pandas for August 2025 (`python src/check_measures.py 2025-08`). All six match: 9,527 issues opened, 22 still open, median 9 days, 30 day close rate 86.8% against 55.3% a year earlier. The findings above come from `python src/findings.py`, and they match the numbers on the report pages.
 
 ## How to run it
 
@@ -47,6 +80,7 @@ I checked the measures against pandas for August 2025 (`python src/check_measure
 pip install -r requirements.txt
 python src/pull.py
 python -m pytest
+python src/findings.py
 ```
 
 Open `Detroit311.pbix` and point the `RepoFolder` parameter at your clone (Transform data, Edit parameters).
@@ -56,6 +90,13 @@ Open `Detroit311.pbix` and point the `RepoFolder` parameter at your clone (Trans
 ## What would break this
 
 - The data records when an issue was marked closed, not whether the problem was fixed.
-- 5.9% of issues have no council district, so district level rates will be computed on a slightly smaller set.
+- The September 2024 step described above is unexplained. Cohorts before it are not comparable with cohorts after it.
+- I have not checked whether the May and June 2026 dip is a real slowdown or a change in how the city records closures.
+- Backlog uses the status field. An issue marked Acknowledged may have been worked on and never updated.
+- 5.9% of issues have no council district, so district level rates are computed on a slightly smaller set. They show as Unknown in the district table.
 - Request types are free text with 69 distinct values in this window, some of them near duplicates. I grouped them by judgment from the names, and a few internal DPW codes land in an Other bucket (8.6% of issues).
 - The layer is live. A later pull will not match these counts exactly.
+
+## What I would do next
+
+Find out what changed in the city's closing process around September 2024, and test whether the 2026 dip survives a longer window. A 60 day close rate would show whether slow issues are still closing or have stalled. Council district boundaries would let me put the backlog on a real map without a Bing dependency.
