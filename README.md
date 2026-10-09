@@ -17,6 +17,8 @@ Detroit closed 84.8% of requests within 30 days for issues created September 202
 - **The old backlog sits in three places.** 5,068 issues are still Open or Acknowledged. 784 of them are more than 90 days old, and Illegal Dumping and Debris (259), Vacant Property and Code (200) and Traffic Signs and Signals (154) make up 78.2% of those.
 - **District 4 is slowest.** It closes 79.9% within 30 days, 7.0 points below a year earlier. District 3 is next at 81.0%. District 2 is the fastest numbered district at 87.4%.
 
+[Read the memo](docs/memo.md) for who should act on these and what to do first: summer staffing for Grass and Weeds and Illegal Dumping, the 784 old requests, and District 4.
+
 ## What I expected and did not get
 
 I expected a year over year comparison to be the main story. The first cohorts say otherwise. Issues created in July and August 2024 closed within 30 days only 49.8% and 55.3% of the time, then the rate jumped to 86.1% for September 2024 and stayed near 90% for a year. A step that sharp looks like a change in how the city closes or archives issues, not a change in service. I can not tell which from this data. It is why the headline comparison starts at September 2024 and why the August 2025 cohort shows a 31 point gain that I do not trust.
@@ -74,7 +76,7 @@ The headline measure is the 30 day close rate by creation month. It only counts 
 
 The backlog aging page uses three calculated columns on `Issues`. Age is the days between an issue's creation and the newest issue in the data, not today's date, so the buckets do not drift when the file is opened later.
 
-I checked the measures against pandas for August 2025 (`python src/check_measures.py 2025-08`). All six match: 9,527 issues opened, 22 still open, median 9 days, 30 day close rate 86.8% against 55.3% a year earlier. The findings above come from `python src/findings.py`, and they match the numbers on the report pages.
+I checked the measures against pandas for August 2025 (`python src/check_measures.py 2025-08`). All six match: 9,527 issues opened, 22 still open, median 9 days, 30 day close rate 86.8% against 55.3% a year earlier. The findings above come from `python src/findings.py`, and they match the numbers on the report pages. The memo figures come from `python src/memo_numbers.py`.
 
 ## How to run it
 
